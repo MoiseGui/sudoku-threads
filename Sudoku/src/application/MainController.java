@@ -191,7 +191,6 @@ public class MainController {
 	@FXML
 	private void handleSolveAction(ActionEvent event) {
 		AnchorPane anchorpane = null;
-		System.out.println(borderpan.getChildren().size());
 		for (Node node : borderpan.getChildren()) {
 			if (node instanceof AnchorPane) {
 				anchorpane = ((AnchorPane) node);
