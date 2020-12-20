@@ -1,1 +1,16 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+.text-input.error {
+    -fx-focus-color: #d35244;
+    -fx-faint-focus-color: #d3524422;
+    -fx-border-color: red;
+    -fx-border-radius: 5;
+}
+
+.text-input.good {
+    -fx-border-color: green;
+    -fx-border-radius: 5;
+}
+
+.text-input.none {
+    -fx-border-color: #CFCFCF;
+    -fx-border-radius: 5;
+}

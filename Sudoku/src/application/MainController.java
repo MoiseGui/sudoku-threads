@@ -6,22 +6,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import application.model.Sudoku;
+import application.model.SudokuValidator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 public class MainController {
 	@FXML
@@ -44,9 +41,102 @@ public class MainController {
 	public MainController() {
 	}
 	
+	@SuppressWarnings("static-access")
 	@FXML
 	private void handleVerifierAction(ActionEvent event) {
 		
+		// Récupérer le AnchorPane qui contient la gride
+		AnchorPane anchorpane = null;
+		for (Node node : borderpan.getChildren()) {
+			if (node instanceof AnchorPane) {
+				anchorpane = ((AnchorPane) node);
+			}
+		}
+		// si le AnchorPane est bien récupéré
+		if (anchorpane != null) {
+			Pane p = getPane();
+			
+			// ce tableau va contenir les différentes valeurs des champs de la gride
+			int[][] tmp = new int[9][9];
+			int i = 0, j = 0;
+			boolean charDetect = false;
+			
+			// ce tableau va stocker les différents champs de notre interface
+			TextField champs[][] = new TextField[9][9];
+			
+			
+			for (Node node3 : p.getChildren()) {
+				
+				//Si c'est bien un TextField
+				if (node3 instanceof TextField) {
+					
+					//le mettre dans le tableau dédié
+					champs[i][j] = (TextField) node3;
+					
+					String value = ((TextField) node3).getText();
+					if (value.isEmpty()) {
+						tmp[i][j] = 0;
+						j++;
+					} else {
+						try {
+							tmp[i][j] = Integer.parseInt(value);
+						} catch (NumberFormatException e) {
+							charDetect = true;
+							champs[i][j].getStyleClass().add("error");
+						}
+						j++;
+					}
+				}
+				if (j == tmp.length) {
+					i++;
+					j = 0;
+				}
+			}
+
+			if (charDetect == true) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText("Error : Character detected");
+				alert.setContentText("You can't insert character");
+				alert.showAndWait();
+				return;
+			}
+		
+		
+			SudokuValidator validator = new SudokuValidator();
+			// envoyer le sudoku au validator
+			validator.sudoku = tmp;
+			
+			// enlever les marqueurs d'erreurs
+			for (int row = 0; row < 9; row++) {
+				for (int col = 0; col < 9; col++) {
+//					if(champs[row][col].getStyleClass().contains("error")) {
+						champs[row][col].getStyleClass().removeAll("error");
+//					}
+				}
+			}
+			
+			// lui envoyer aussi les champs
+			validator.champs = champs;
+			
+			boolean valid = validator.verifier();
+			
+			
+			if(valid) {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Résultat de la vérification");
+				alert.setHeaderText("Succès");
+				alert.setContentText("Votre Grid sudoku est valide !!!");
+				alert.showAndWait();
+			}
+//			else {
+//				Alert alert = new Alert(AlertType.ERROR);
+//				alert.setTitle("Résultat de la vérification");
+//				alert.setHeaderText("Echec");
+//				alert.setContentText("Votre Grid sudoku est invalide !!");
+//				alert.showAndWait();
+//			}
+		}
 	}
 
 	@FXML
@@ -76,19 +166,8 @@ public class MainController {
 			sudoku.setSizeCell();
 
 			// load fxml
-
-			if (sudoku.getSize() == 4) {
-				SwitchScene("view/4x4.fxml");
-			} else if (sudoku.getSize() == 6) {
-				SwitchScene("view/6x6.fxml");
-			} else if (sudoku.getSize() == 9) {
+			if (sudoku.getSize() == 9) {
 				SwitchScene("view/9x9.fxml");
-			} else if (sudoku.getSize() == 12) {
-				SwitchScene("view/12x12.fxml");
-			} else if (sudoku.getSize() == 16) {
-				SwitchScene("view/16x16.fxml");
-				Main.getPrimaryStage().setHeight(900);
-				Main.getPrimaryStage().setWidth(900);
 			} else {
 				System.out.println("Error");
 			}
@@ -126,33 +205,6 @@ public class MainController {
 		borderpan.setCenter(anchorpane);
 		Main.getPrimaryStage().setHeight(717);
 		Main.getPrimaryStage().setWidth(768);
-	}
-
-	@FXML
-	private void handleSizeAction(ActionEvent event) throws IOException {
-
-		MenuItem mItem = (MenuItem) event.getSource();
-		String label = mItem.getText();
-		if (label.equalsIgnoreCase("4x4")) {
-			SwitchScene("view/4x4.fxml");
-			sudoku.setSize(4);
-		} else if (label.equalsIgnoreCase("6x6")) {
-			SwitchScene("view/6x6.fxml");
-			sudoku.setSize(6);
-		} else if (label.equalsIgnoreCase("9x9")) {
-			SwitchScene("view/9x9.fxml");
-			sudoku.setSize(9);
-		} else if (label.equalsIgnoreCase("12x12")) {
-			SwitchScene("view/12x12.fxml");
-			sudoku.setSize(12);
-		} else if (label.equalsIgnoreCase("16x16")) {
-			SwitchScene("view/16x16.fxml");
-			Main.getPrimaryStage().setHeight(900);
-			Main.getPrimaryStage().setWidth(900);
-			sudoku.setSize(16);
-		} else {
-			System.out.println("Error");
-		}
 	}
 
 	private Pane getPane() {
@@ -344,18 +396,4 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	private void handleAboutAction() throws IOException {
-		FXMLLoader loader = new FXMLLoader(Main.class.getResource("view/About.fxml"));
-		BorderPane page = (BorderPane) loader.load();
-		Stage dialogStage = new Stage();
-		dialogStage.setTitle("About Sudoku Solver FX");
-		dialogStage.initModality(Modality.WINDOW_MODAL);
-		dialogStage.initOwner(Main.getPrimaryStage());
-		dialogStage.setResizable(false);
-		Scene scene = new Scene(page);
-		dialogStage.setScene(scene);
-		dialogStage.showAndWait();
-
-	}
 }

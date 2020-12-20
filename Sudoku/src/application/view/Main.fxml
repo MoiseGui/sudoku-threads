@@ -17,11 +17,6 @@
                   <MenuItem mnemonicParsing="false" onAction="#handleOpenAction" text="Open" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#handleAboutAction" text="About" />
-            </items>
-          </Menu>
         </menus>
       </MenuBar>
    </top>

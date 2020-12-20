@@ -1,10 +1,12 @@
 package application.model;
 
+import javafx.scene.control.TextField;
+
 public class SudokuValidator {
-	// Global constant for number of threads
+	// constante pour le nombre de threads
 	private static final int NUM_THREADS = 27;
-	// Sudoku puzzle solution to validate
-	private static final int[][] sudoku = {
+	// Sudoku puzzle solution à valider
+	public static int[][] sudoku = {
 			{6, 2, 4, 5, 3, 9, 1, 8, 7},
 			{5, 1, 9, 7, 2, 8, 6, 3, 4},
 			{8, 3, 7, 6, 1, 4, 2, 9, 5},
@@ -14,12 +16,15 @@ public class SudokuValidator {
 			{3, 7, 1, 9, 5, 6, 8, 4, 2},
 			{4, 9, 6, 1, 8, 2, 5, 7, 3},
 			{2, 8, 5, 4, 7, 3, 9, 1, 6}
-			};
-	// Array that worker threads will update
+	};
+	
+	public static TextField[][] champs = null; 
+	
+	// Array que les thread vont mettre à jour
 	private static boolean[] valid;
 	
-	// General object that will be extended by worker thread objects, only contains
-	// the row and column relevant to the thread
+	// Classe parent qui sera étendu par les classes Thread, contient uniquement
+	// la ligne et la colonne concernant le hread
 	public static class RowColumnObject {
 		int row;
 		int col;
@@ -42,7 +47,8 @@ public class SudokuValidator {
 				return;
 			}
 			
-			// Check if numbers 1-9 only appear once in the row
+			// ce tableau vérifie l'unicité des nombres 1-9 sur la ligne
+			// lorsqu'on trouve 1 => validityArray[0] = true;
 			boolean[] validityArray = new boolean[9];
 			int i;
 			for (i = 0; i < 9; i++) {
@@ -50,13 +56,16 @@ public class SudokuValidator {
 				// the valid array will not be updated and the thread will exit.
 				int num = sudoku[row][i];
 				if (num < 1 || num > 9 || validityArray[num - 1]) {
+					champs[row][i].getStyleClass().add("error");
 					return;
 				} else if (!validityArray[num - 1]) {
 					validityArray[num - 1] = true;
 				}
 			}
-			// If reached this point, row subsection is valid.
+			
+			// lorsqu'on atteint cette ligne , c'est que tout est correct.
 			valid[9 + row] = true;
+			
 		}
 
 	}
@@ -82,12 +91,13 @@ public class SudokuValidator {
 				// the valid array will not be updated and the thread will exit.
 				int num = sudoku[i][col];
 				if (num < 1 || num > 9 || validityArray[num - 1]) {
+					champs[i][col].getStyleClass().add("error");
 					return;
 				} else if (!validityArray[num - 1]) {
 					validityArray[num - 1] = true;
 				}
 			}
-			// If reached this point, column subsection is valid.
+			// Arrivé ici, la colonne est valide.
 			valid[18 + col] = true;			
 		}		
 	}
@@ -112,23 +122,24 @@ public class SudokuValidator {
 				for (int j = col; j < col + 3; j++) {
 					int num = sudoku[i][j];
 					if (num < 1 || num > 9 || validityArray[num - 1]) {
+						champs[i][j].getStyleClass().add("error");
 						return;
 					} else {
 						validityArray[num - 1] = true;		
 					}
 				}
 			}
-			// If reached this point, 3x3 subsection is valid.
-			valid[row + col/3] = true; // Maps the subsection to an index in the first 8 indices of the valid array			
+			// Arrivé ici, la section 3x3 est correcte
+			valid[row + col/3] = true; // Maper le sous section à un index de 0 à 8 dans le array valid			
 		}
 		
 	}
 	
-	public static void main(String[] args) {
+	public boolean verifier() {
 		valid = new boolean[NUM_THREADS];		
 		Thread[] threads = new Thread[NUM_THREADS];
 		int threadIndex = 0;
-		// Create 9 threads for 9 3x3 subsections, 9 threads for 9 columns and 9 threads for 9 rows.
+		// Créer 9 threads pour 9 3x3 sous sections, 9 threads pour 9 colonnes et 9 threads pour 9 lignes.
 		// This will end up with a total of 27 threads.
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {						
@@ -158,13 +169,14 @@ public class SudokuValidator {
 			}
 		}
 		
-		// If any of the entries in the valid array are 0, then the sudoku solution is invalid
+		// Si un seul élément du tableau valid est resté false, alors le sudoku n'est pas valide
 		for (int i = 0; i < valid.length; i++) {
 			if (!valid[i]) {
-				System.out.println("Sudoku solution is invalid!");
-				return;
+//				System.out.println("Sudoku solution is invalid!");
+				return false;
 			}
 		}
-		System.out.println("Sudoku solution is valid!");
+//		System.out.println("Sudoku solution is valid!");
+		return true;
 	}
 }
