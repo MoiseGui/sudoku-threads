@@ -372,10 +372,10 @@ public class MainController {
 		}
 		if (anchorpane != null) {
 			FileChooser fileChooser = new FileChooser();
-			// Set extension filter
+			// Spécifier l'extension de fichiers
 			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
 			fileChooser.getExtensionFilters().add(extFilter);
-			// Show save file dialog
+			// Affihcer le file dialog
 			File file = fileChooser.showSaveDialog(Main.getPrimaryStage());
 
 			if (file != null) {
@@ -404,7 +404,7 @@ public class MainController {
 						j = 0;
 					}
 				}
-				// WRITE TO FILE
+				// ECRIRE SUR FICHIER
 				BufferedWriter outputWriter = null;
 				outputWriter = new BufferedWriter(new FileWriter(path));
 				for (i = 0; i < savegrid.length; i++) {
@@ -421,8 +421,8 @@ public class MainController {
 		} else {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error");
-			alert.setHeaderText("Error");
-			alert.setContentText("Please select size or open one file to save a grid");
+			alert.setHeaderText("Erreur");
+			alert.setContentText("Veuillez choisir un fichier où enregistrer la grille");
 			alert.showAndWait();
 		}
 	}
