@@ -11,9 +11,9 @@ Ceci est un resolveur de Sudoku 9x9 avec les fonctionnalités suivantes:
 Ce projet est réalisé avec JavaFx en respectant l'architecture MVC.
 Ainsi donc
     <ul type="none">
-         <li>le paquage application contient la classe Main et le Controller</li>
-         <li>le paquage application.view contient les interfaces graphiques,</li>
-         <li>le paquage application.model les classes modèles d'exécution</li>
+         <li>le paquage <b>application</b> contient la classe Main et le Controller</li>
+         <li>le paquage <b>application.view</b> contient les interfaces graphiques,</li>
+         <li>le paquage <b>application.model</b> les classes modèles d'exécution</li>
     </ul>
 
 
