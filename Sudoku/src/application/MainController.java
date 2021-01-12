@@ -43,6 +43,7 @@ public class MainController {
 	
 	@SuppressWarnings("static-access")
 	@FXML
+	//Cette méthode est associée au bouton Vérifier 
 	private void handleVerifierAction(ActionEvent event) {
 		
 		// Récupérer le AnchorPane qui contient la gride
@@ -64,6 +65,7 @@ public class MainController {
 			
 			// ce flag sera levé lorsque l'on détecte un caractère non numérique
 			boolean charDetect = false;
+			// ce flag sera levé lorsque l'on détecte une cellule vide
 			boolean emptyCell = false;
 			
 			int i = 0, j = 0;
@@ -85,6 +87,7 @@ public class MainController {
 						try {
 							tmp[i][j] = Integer.parseInt(value);
 						} catch (NumberFormatException e) {
+							//si le ParseInt ne marche pas c'est qu'un caractère a été detecté
 							charDetect = true;
 							champs[i][j].getStyleClass().add("error");
 						}
@@ -92,7 +95,7 @@ public class MainController {
 					}
 				}
 				if (j == tmp.length) {
-					i++;
+					i++;                //On passe à l'autre ligne
 					j = 0;
 				}
 			}
