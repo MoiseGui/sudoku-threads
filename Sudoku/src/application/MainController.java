@@ -56,14 +56,17 @@ public class MainController {
 		if (anchorpane != null) {
 			Pane p = getPane();
 			
-			// ce tableau va contenir les différentes valeurs des champs de la gride
-			int[][] tmp = new int[9][9];
-			int i = 0, j = 0;
-			boolean charDetect = false;
-			
 			// ce tableau va stocker les différents champs de notre interface
 			TextField champs[][] = new TextField[9][9];
 			
+			// ce tableau va contenir les différentes valeurs des champs de la gride
+			int[][] tmp = new int[9][9];
+			
+			// ce flag sera levé lorsque l'on détecte un caractère non numérique
+			boolean charDetect = false;
+			boolean emptyCell = false;
+			
+			int i = 0, j = 0;
 			
 			for (Node node3 : p.getChildren()) {
 				
@@ -76,6 +79,7 @@ public class MainController {
 					String value = ((TextField) node3).getText();
 					if (value.isEmpty()) {
 						tmp[i][j] = 0;
+						emptyCell = true;
 						j++;
 					} else {
 						try {
@@ -96,29 +100,40 @@ public class MainController {
 			if (charDetect == true) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
-				alert.setHeaderText("Error : Character detected");
-				alert.setContentText("You can't insert character");
+				alert.setHeaderText("Erreur : Lettre detectée");
+				alert.setContentText("Vous avez insérez un caractère non nombre");
 				alert.showAndWait();
 				return;
 			}
+			
+			if (emptyCell == true) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText("Erreur : Cellule vide detectée");
+				alert.setContentText("Vous devez remplir la grille avant de pouvoir vérifier sa validité");
+				alert.showAndWait();
+				return;
+			}
+
 		
 		
 			SudokuValidator validator = new SudokuValidator();
-			// envoyer le sudoku au validator
+			// envoyer la grille au validator
 			validator.sudoku = tmp;
 			
 			// enlever les marqueurs d'erreurs
 			for (int row = 0; row < 9; row++) {
 				for (int col = 0; col < 9; col++) {
-//					if(champs[row][col].getStyleClass().contains("error")) {
-						champs[row][col].getStyleClass().removeAll("error");
-//					}
+					champs[row][col].getStyleClass().removeAll("error");
 				}
 			}
 			
 			// lui envoyer aussi les champs
 			validator.champs = champs;
 			
+			
+			// cette méthode vérifie la validité de la gride en ce servant de Threads
+			// elle indique aussi les colonnes sources d'erreurs
 			boolean valid = validator.verifier();
 			
 			
@@ -139,6 +154,9 @@ public class MainController {
 		}
 	}
 
+	
+	
+	// cette méthode charge une gride soduku à partir d'un fichier
 	@FXML
 	private void handleOpenAction(ActionEvent event) throws IOException {
 		FileChooser fileChooser = new FileChooser();
@@ -158,8 +176,8 @@ public class MainController {
 			} catch (Exception e) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
-				alert.setHeaderText("Error : Invalid file");
-				alert.setContentText("Please select a other file or check file's syntax");
+				alert.setHeaderText("Erreur : Fichier invalide");
+				alert.setContentText("Veuillez selectionner un fichier valide");
 				alert.showAndWait();
 			}
 
@@ -183,7 +201,7 @@ public class MainController {
 						j++;
 					} else {
 						((TextField) node3).setText(String.valueOf((sudoku.getGrid()[i][j])));
-						// Mettre en rouge//((TextField)
+						// Mettre en bleue//((TextField)
 						(node3).setStyle("-fx-text-inner-color: blue;");
 						j++;
 					}
@@ -196,7 +214,10 @@ public class MainController {
 
 		}
 	}
-
+	
+	
+	// Cette méthode charge le fichier xml contenant la grid 9x9.
+	// L'existance de cette méthode permettra par la suite de pouvoir peut-être charger d'autres tailles de Sudoku.
 	public void SwitchScene(String fxml) throws IOException {
 		AnchorPane anchorpane = null;
 		FXMLLoader loader = new FXMLLoader();
@@ -206,7 +227,10 @@ public class MainController {
 		Main.getPrimaryStage().setHeight(717);
 		Main.getPrimaryStage().setWidth(768);
 	}
+	
+	
 
+	// Cette méthode retourne le conteneur de la gride Sudoku
 	private Pane getPane() {
 		AnchorPane anchorpane = null;
 		for (Node node : borderpan.getChildren()) {
@@ -225,7 +249,10 @@ public class MainController {
 		}
 		return p;
 	}
-
+	
+	
+	
+	// Cette méthode réinitialise la gride
 	@FXML
 	private void handleResetAction(ActionEvent event) {
 
@@ -239,7 +266,11 @@ public class MainController {
 			}
 		}
 	}
-
+	
+	
+	
+	// Cette méthode résoud si possible le Sudoku à partir des valeurs déjà présentes
+	
 	@FXML
 	private void handleSolveAction(ActionEvent event) {
 		AnchorPane anchorpane = null;
@@ -279,12 +310,12 @@ public class MainController {
 			if (charDetect == true) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
-				alert.setHeaderText("Error : Character detected");
-				alert.setContentText("You can't insert character");
+				alert.setHeaderText("Erreur : Lettre detectée");
+				alert.setContentText("Vous avez insérez un caractère non nombre");
 				alert.showAndWait();
 			} else if (sudoku.isEmpty() == true || sudoku.ValidGrid() == true) {
 
-				if (sudoku.isValid(0)) {
+				if (sudoku.isGridValid(0)) {
 					i = 0;
 					j = 0;
 					for (Node node4 : p.getChildren()) {
@@ -306,15 +337,15 @@ public class MainController {
 				} else {
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Error");
-					alert.setHeaderText("Error : Sudoku isn't solvable");
-					alert.setContentText("Please check your grid");
+					alert.setHeaderText("Erreur : Résolution impossible");
+					alert.setContentText("Vérifier votre grille.");
 					alert.showAndWait();
 				}
 			} else {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
-				alert.setHeaderText("Error : Number too high or too low");
-				alert.setContentText("One value in the grid isn't between 1 and " + sudoku.getSize());
+				alert.setHeaderText("Erreur : Nombre trop grand ou trop petit");
+				alert.setContentText("Une valeur de la grille n'est pas comprise entre 1 et " + sudoku.getSize());
 				alert.showAndWait();
 			}
 
@@ -322,8 +353,8 @@ public class MainController {
 
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error");
-			alert.setHeaderText("Error : Can't solve the grid");
-			alert.setContentText("Please select size or open one file to solve a grid");
+			alert.setHeaderText("Erreur : Résolution impossible");
+			alert.setContentText("La grille n'a pas pu être chargée");
 			alert.showAndWait();
 
 		}

@@ -23,10 +23,10 @@
    <bottom>
       <HBox alignment="CENTER" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="200.0" spacing="50.0" BorderPane.alignment="CENTER">
          <children>
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSaveAction" text="Sauvegarder" />
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSolveAction" text="Résoudre" />
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleResetAction" text="Reset" />
             <Button alignment="CENTER" contentDisplay="CENTER" layoutX="553.0" layoutY="48.0" mnemonicParsing="false" onAction="#handleVerifierAction" text="Vérifier" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSolveAction" text="Résoudre" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleResetAction" text="Réinitialiser" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSaveAction" text="Sauvegarder" />
          </children>
          <BorderPane.margin>
             <Insets />

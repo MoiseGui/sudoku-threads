@@ -11,6 +11,7 @@ public class Sudoku {
 	private int[][] grid;
 	private int size, sizec, sizer;
 	private String filePath;
+	boolean isValid = false;
 
 	public Sudoku(int[][] grid, int size, int sizec, int sizer) {
 		grid = this.grid;
@@ -41,6 +42,7 @@ public class Sudoku {
 
 	}
 
+	
 	public void initGridFile() {
 		this.grid = new int[this.size][this.size];
 
@@ -66,6 +68,7 @@ public class Sudoku {
 
 	}
 
+	
 	public void initGrid() {
 
 		this.grid = new int[this.size][this.size];
@@ -100,6 +103,8 @@ public class Sudoku {
 
 	}
 
+	
+	// cette méthode vérifie que tous les nombres de la grille sont compris entre 0 et la taille du sidoku (9)
 	public boolean ValidGrid() {
 		for (int i = 0; i < this.grid.length; i++) {
 			for (int j = 0; j < this.grid.length; j++) {
@@ -112,24 +117,12 @@ public class Sudoku {
 	}
 
 	public void setSizeCell() {
-		if (this.size == 4) {
-			this.sizec = 2;
-			this.sizer = 2;
-		} else if (this.size == 6) {
-			this.sizec = 2;
-			this.sizer = 3;
-		} else if (this.size == 9) {
-			this.sizec = 3;
-			this.sizer = 3;
-		} else if (this.size == 12) {
-			this.sizec = 3;
-			this.sizer = 4;
-		} else if (this.size == 16) {
-			this.sizec = 4;
-			this.sizer = 4;
-		}
+		this.sizec = 3;
+		this.sizer = 3;
 	}
 
+	
+	// cette méthode vérifie si un nombre donné (k) existe déjà sur la colonne spécifiée (j)
 	public boolean notInColumn(int k, int j) {
 
 		int i;
@@ -140,6 +133,7 @@ public class Sudoku {
 		return true;
 	}
 
+	// cette méthode vérifie si un nombre donné (k) existe déjà sur la ligne spécifiée (j)
 	public boolean notInRow(int k, int i) {
 		int j;
 		for (j = 0; j < this.size; j++) {
@@ -149,6 +143,8 @@ public class Sudoku {
 		return true;
 	}
 
+	
+	// cette méthode vérifie si un nombre donné (k) existe déjà sur le tableau 3x3 spécifiée (i, j)
 	public boolean notInCell(int k, int i, int j) {
 
 		int i2 = i - (i % this.sizec);
@@ -160,23 +156,112 @@ public class Sudoku {
 		return true;
 	}
 
+
+	
+	// Cette classe sera utilisée par les Thread pour vérifier et valider la cellule d'une position donnée
+	public class IsValid implements Runnable {
+		int position;
+		
+		IsValid(int position){
+			this.position = position;
+		}
+
+		@Override
+		public void run() {
+			
+			if (position == size * size) {	
+				isValid = true;
+				return;
+			}
+
+			int i = position / size;  // Exemple: pour position = 8, i = 0, j = 8
+			int j = position % size;  // Exemple: pour position = 9, i = 1, j = 0
+
+			// si une valeur non nulle existe déjà, on passe à la cellule suivante.
+			if (grid[i][j] != 0) {
+//				return isValid(position + 1);
+				Thread thread = new Thread(new IsValid(position+1));
+				thread.start();
+				try {
+					thread.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return;
+			}
+
+			
+			// pour k = 1 - 9, on cherche la valeur de k qui n'existe ni sur sa ligne, ni sur sa colonne, ni dans son 3x3
+			int k;
+			for (k = 1; k <= size; k++) {
+
+				if (notInColumn(k, j) == true && notInRow(k, i) == true && notInCell(k, i, j) == true) {
+
+					// une fois trouvé, on peut le mettre à cette position
+					grid[i][j] = k;
+					
+					Thread thread = new Thread(new IsValid(position+1));
+					thread.start();
+					try {
+						thread.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					if (isValid)
+						return;
+				}
+			}
+			grid[i][j] = 0;
+
+			return;
+			
+		}
+		
+	}
+	
+	
+	// cette méthode vérifie et résoud la grille si possible (position = 0 - 80)
+	// Elle utilise des Thread
+	public boolean isGridValid(int position) {
+		
+		Thread thread = new Thread(new IsValid(position));
+		thread.start();
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return isValid;
+	}
+	
+	// Cette méthode est la version sans thread de la précédente
 	public boolean isValid(int position) {
 
 		if (position == this.size * this.size)
 			return true;
 
-		int i = position / this.size;
-		int j = position % this.size;
+		int i = position / this.size;  // Exemple: pour position = 8, i = 0, j = 8
+		int j = position % this.size;  // Exemple: pour position = 9, i = 1, j = 0
 
+		// si une valeur non nulle existe déjà, on passe à la cellule suivante.
 		if (this.grid[i][j] != 0) {
 			return isValid(position + 1);
 		}
 
+		
+		// pour k = 1 - 9, on cherche la valeur de k qui n'existe ni sur sa ligne, ni sur sa colonne, ni dans son 3x3
 		int k;
 		for (k = 1; k <= this.size; k++) {
 
 			if (notInColumn(k, j) == true && notInRow(k, i) == true && notInCell(k, i, j) == true) {
 
+				// une fois trouvé, on peut le mettre à cette position
 				this.grid[i][j] = k;
 
 				if (isValid(position + 1))
