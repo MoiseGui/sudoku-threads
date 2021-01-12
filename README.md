@@ -20,7 +20,7 @@ Ainsi donc
 <h1>Pour l'exécuter il existe deux façons:</h1>
 
 <ol>
-  <li>Un fichier exécutable est déjà généré et introduit à l'emplacement <b>/Sudoku/build/deploy/bundles</b></li>
+  <li>Un fichier exécutable est déjà généré et introduit à l'emplacement <b><a href="https://github.com/MoiseGui/sudoku-threads/tree/master/Sudoku/build/deploy/bundles">/Sudoku/build/deploy/bundles </a></b></li>
   
   <li>
     A partir d'un éditeur de code Java et dans ce cas incluire les dépendances suivantes:
