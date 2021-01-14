@@ -20,49 +20,49 @@
 		<mkdir dir="externalLibs" />
 	
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\LATITUDE E7450\Downloads\programmes\javafx-sdk-11.0.2\lib">
-				<filename name="javafx.fxml.jar"/>
-			</fileset>
-		</copy>
-		<copy todir="externalLibs">
-			<fileset dir="C:\Users\LATITUDE E7450\Downloads\programmes\javafx-sdk-11.0.2\lib">
-				<filename name="javafx-swt.jar"/>
-			</fileset>
-		</copy>
-		<copy todir="externalLibs">
-			<fileset dir="C:\Users\LATITUDE E7450\Downloads\programmes\javafx-sdk-11.0.2\lib">
-				<filename name="javafx.media.jar"/>
-			</fileset>
-		</copy>
-		<copy todir="externalLibs">
-			<fileset dir="C:\Users\LATITUDE E7450\Downloads\programmes\javafx-sdk-11.0.2\lib">
-				<filename name="javafx.base.jar"/>
-			</fileset>
-		</copy>
-		<copy todir="externalLibs">
-			<fileset dir="C:\Users\LATITUDE E7450\Downloads\programmes\javafx-sdk-11.0.2\lib">
-				<filename name="javafx.swing.jar"/>
-			</fileset>
-		</copy>
-		<copy todir="externalLibs">
-			<fileset dir="C:\Users\LATITUDE E7450\Downloads\programmes\javafx-sdk-11.0.2\lib">
+			<fileset dir="C:\Users\besto\Downloads\jars\JavaFx11">
 				<filename name="javafx.controls.jar"/>
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\LATITUDE E7450\Downloads\programmes\javafx-sdk-11.0.2\lib">
+			<fileset dir="C:\Users\besto\Downloads\jars\JavaFx11">
+				<filename name="javafx.fxml.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="C:\Users\besto\Downloads\jars\JavaFx11">
+				<filename name="javafx.base.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="C:\Users\besto\Downloads\jars\JavaFx11">
+				<filename name="javafx.media.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="C:\Users\besto\Downloads\jars\JavaFx11">
+				<filename name="javafx.graphics.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="C:\Users\besto\Downloads\jars\JavaFx11">
 				<filename name="javafx.web.jar"/>
 			</fileset>
 		</copy>
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\LATITUDE E7450\Downloads\programmes\javafx-sdk-11.0.2\lib">
-				<filename name="javafx.graphics.jar"/>
+			<fileset dir="C:\Users\besto\Downloads\jars\JavaFx11">
+				<filename name="javafx-swt.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="C:\Users\besto\Downloads\jars\JavaFx11">
+				<filename name="javafx.swing.jar"/>
 			</fileset>
 		</copy>
 	
 		<mkdir dir="project" />
 		<copy todir="project">
-			<fileset dir="C:\Users\LATITUDE E7450\git\sudoku-threads\Sudoku">
+			<fileset dir="C:\Users\besto\git\sudoku-threads\Sudoku">
 				<include name="src/**" />
 			</fileset>
 		</copy>
@@ -132,6 +132,7 @@
 		<fx:resources id="appRes">
 			<fx:fileset dir="dist" includes="Sudoku.jar"/>
 			<fx:fileset dir="dist" includes="libs/*"/>
+			<fx:fileset dir="dist" includes="src/img/**"/>
 		</fx:resources>
 	
 		<fx:application id="fxApplication"
