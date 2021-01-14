@@ -215,6 +215,8 @@ public class Sudoku {
 						return;
 				}
 			}
+			
+			isValid = false;
 			grid[i][j] = 0;
 
 			return;
@@ -225,7 +227,7 @@ public class Sudoku {
 	
 	
 	// cette méthode vérifie et résoud la grille si possible (position = 0 - 80)
-	// Elle utilise des Thread
+	// Elle utilise des Threads
 	public boolean isGridValid(int position) {
 		
 		Thread thread = new Thread(new IsValid(position));
